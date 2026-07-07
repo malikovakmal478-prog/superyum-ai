@@ -120,12 +120,11 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     javob = ask_ai(text)
 
-    if len(javob) > 4000:
-        for i in range(0, len(javob), 4000):
-            await update.message.reply_text(javob[i:i+4000])
-   else:
+   if len(javob) > 4000:
+    for i in range(0, len(javob), 4000):
+        await update.message.reply_text(javob[i:i+4000])
+else:
     await update.message.reply_text(javob)
-
 
 def main():
     Thread(target=run_flask).start()
