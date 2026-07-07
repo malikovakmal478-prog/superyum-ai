@@ -60,3 +60,87 @@ logger = logging.getLogger(__name__)
 # ==========================
 
 memory = {}
+# ==========================
+# OPENROUTER
+# ==========================
+
+def ask_ai(prompt):
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    data = {
+        "model": MODEL,
+        "messages": [
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ],
+    }
+
+    try:
+        r = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=data,
+            timeout=60,
+        )
+
+        answer = r.json()["choices"][0]["message"]["content"]
+        return answer
+
+    except Exception as e:
+        print(e)
+        return "❌ AI javob bera olmadi."
+        # ==========================
+# COMMANDS
+# ==========================
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "👋 Assalomu alaykum!\n\n"
+        "Men SuperYum AI botiman.\n"
+        "Savolingizni yozing."
+    )
+
+
+async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+
+    await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING,
+    )
+
+    javob = ask_ai(text)
+
+    if len(javob) > 4000:
+        for i in range(0, len(javob), 4000):
+            await update.message.reply_text(javob[i:i+4000])
+   else:
+    await update.message.reply_text(javob)
+
+
+def main():
+    Thread(target=run_flask).start()
+
+    application = Application.builder().token(BOT_TOKEN).build()
+
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, chat)
+    )
+
+    print("✅ Bot ishga tushdi...")
+
+    application.run_polling()
+
+
+if __name__ == "__main__":
+    main()
