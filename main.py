@@ -19,8 +19,8 @@ from telegram.ext import (
 # CONFIG
 # ==========================
 
-BOT_TOKEN = os.getenv("8321842423:AAG104h9Hz5V5N-4DysVGmrj4O0LMoVba00", "8321842423:AAG104h9Hz5V5N-4DysVGmrj4O0LMoVba00")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "API_KEYINGIZ")
+BOT_TOKEN = os.getenv("8321842423:AAG104h9Hz5V5N-4DysVGmrj4O0LMoVba00", "yordamvhi")
+OPENROUTER_API_KEY = os.getenv("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")
 
 MODEL = "deepseek/deepseek-chat-v3-0324:free"
 
